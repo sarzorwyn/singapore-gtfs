@@ -574,3 +574,16 @@ route_id,agency_id,route_short_name,route_type
 98M,TTS,98M,3
 990,TTS,990,3
 992,TTS,992,3
+NS,NS,,1
+EW,EW,,1
+CG,CG,,1
+NE,NE,,1
+CC,CC,,1
+CE,CE,,1
+DT,DT,,1
+TE,TE,,1
+SE,SE,,0
+SW,SW,,0
+PE,PE,,0
+PW,PW,,0
+BP,BP,,0

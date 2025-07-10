@@ -1,4 +1,3 @@
-// scripts/fetchStopsOnce.ts
 import fs from 'fs-extra';
 import path from 'path';
 import { fetchAllBusRoutes } from '../parseBusRouteApi';
