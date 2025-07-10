@@ -1,0 +1,33 @@
+{
+  "name": "singapore-gtfs",
+  "version": "1.0.0",
+  "description": "This is a fork of yinshangyang's Singapore GTFS feed, with the goal of using LTA bus data feeds together with manual train data input.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sarzorwyn/singapore-gtfs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sarzorwyn/singapore-gtfs/issues"
+  },
+  "homepage": "https://github.com/sarzorwyn/singapore-gtfs#readme",
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.0.12",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "csv-parser": "^3.2.0",
+    "dotenv": "^17.2.0",
+    "fast-csv": "^5.0.2",
+    "fs-extra": "^11.3.0"
+  }
+}

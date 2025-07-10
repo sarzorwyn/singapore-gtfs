@@ -1,14 +1,12 @@
-# Singapore GTFS (Updated 2018-04-28)
+# Singapore GTFS 
 
-This is a composed version of the data based on scheduling data available online gathered through scripts and some manual data entry.
-
-It might be dirty in places.
+This is a fork of yinshangyang's Singapore GTFS feed, with the goal of using LTA bus data feeds together with manual train data input.
 
 ## Notes
 
 ### Weekdays only
 
-At the moment, only weekday schedules are covered. The reason behind this is that my needs only required this amount of schedule information. The effort to cover Saturday and Sunday didn’t justify the returns.
+At the moment, only weekday schedules are covered.
 
 So much as possible, the peak and off-peak hours and frequencies are represented.
 
