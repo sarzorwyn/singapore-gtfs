@@ -1,13 +1,14 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { format } from '@fast-csv/format';
-import { GtfsRoute, GtfsStop, GtfsStopTime, GtfsTrip } from './types/types';
+import { GtfsFrequency, GtfsRoute, GtfsStop, GtfsStopTime, GtfsTrip } from './types/types';
 
 export async function writeGtfsFiles(data: {
 	routes: GtfsRoute[];
 	trips: GtfsTrip[];
 	stops: GtfsStop[];
 	stopTimes: GtfsStopTime[];
+	freqs: GtfsFrequency[];
 }) {
 	await writeCsv('routes.txt', data.routes, [
 		'route_id',
@@ -37,6 +38,13 @@ export async function writeGtfsFiles(data: {
 		'stop_id',
 		'stop_sequence',
 		'shape_dist_traveled'
+	]);
+
+	await writeCsv('frequencies.txt', data.freqs, [
+		'trip_id',
+		'start_time',
+		'end_time',
+		'headway_secs'
 	]);
 }
 

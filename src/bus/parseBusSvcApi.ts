@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { GtfsRoute, GtfsTrip, RawBusService } from '../types/types';
+import { GtfsFrequency, GtfsRoute, GtfsTrip, RawBusService } from '../types/types';
 import path from 'path';
 import fs from 'fs-extra';
 
@@ -8,23 +8,6 @@ const PAGE_SIZE = 500;
 const API_KEY = process.env.LTA_ACCOUNT_KEY!;
 
 const cachePath = path.join(__dirname, './cache/data/bus_services_cache.json');
-
-// const mrtRoutes: GtfsRoute[] = [
-// 	{ route_id: 'NS', agency_id: 'SMRT', route_short_name: 'NS MRT Line', route_long_name: 'NS Line', route_type: 1 },
-// 	{ route_id: 'EW', agency_id: 'SMRT', route_short_name: 'EW MRT Line', route_long_name: 'EW Line', route_type: 1 },
-// 	{ route_id: 'CG', agency_id: 'SMRT', route_short_name: 'CG MRT Line', route_long_name: 'CG Line', route_type: 1 },
-// 	{ route_id: 'NE', agency_id: 'SBST', route_short_name: 'NE MRT Line', route_long_name: 'NE Line', route_type: 1 },
-// 	{ route_id: 'CC', agency_id: 'SBST', route_short_name: 'CC MRT Line', route_long_name: 'CC Line', route_type: 1 },
-// 	{ route_id: 'CE', agency_id: 'SBST', route_short_name: 'CE MRT Line', route_long_name: 'CE Line', route_type: 1 },
-// 	{ route_id: 'DT', agency_id: 'SBST', route_short_name: 'DT MRT Line', route_long_name: 'DT Line', route_type: 1 },
-// 	{ route_id: 'TE', agency_id: 'SBST', route_short_name: 'TE MRT Line', route_long_name: 'TE Line', route_type: 1 },
-// 	{ route_id: 'SE', agency_id: 'LRT', route_short_name: 'SE LRT Line', route_long_name: 'SE Line', route_type: 0 },
-// 	{ route_id: 'SW', agency_id: 'LRT', route_short_name: 'SW LRT Line', route_long_name: 'SW Line', route_type: 0 },
-// 	{ route_id: 'PE', agency_id: 'LRT', route_short_name: 'PE LRT Line', route_long_name: 'PE Line', route_type: 0 },
-// 	{ route_id: 'PW', agency_id: 'LRT', route_short_name: 'PW LRT Line', route_long_name: 'PW Line', route_type: 0 },
-// 	{ route_id: 'BP', agency_id: 'LRT', route_short_name: 'BP LRT Line', route_long_name: 'BP Line', route_type: 0 },
-// ];
-
 
 export async function fetchAllBusServices(): Promise<RawBusService[]> {
 	const results: RawBusService[] = [];
@@ -57,7 +40,7 @@ export async function transformBusSvcApiDataToGtfs(): Promise<{
 }> {
 	let services: RawBusService[];
 	if (fs.existsSync(cachePath)) {
-		console.log('⚡ Using cached bus services from file');
+		console.log('⚡ Using cached bus services from file to generate routes and trips');
 		services = await fs.readJson(cachePath);
 	} else {
 		services = await fetchAllBusServices();
@@ -89,4 +72,50 @@ export async function transformBusSvcApiDataToGtfs(): Promise<{
 	}
 
 	return { routes, trips };
+}
+
+function parseFreqRange(freqStr: string): number | null {
+	if (!freqStr.includes('-')) return null;
+	const [minStr, maxStr] = freqStr.split('-').map(s => parseInt(s.trim(), 10));
+	if (isNaN(minStr) || isNaN(maxStr)) return null;
+	return Math.round(((minStr + maxStr) / 2) * 60); // → seconds
+}
+
+export async function generateGtfsFrequencies(): Promise<GtfsFrequency[]> {
+	const timeBlocks = [
+		{ field: 'AM_Offpeak_Freq', start: '05:00:00', end: '06:30:00' },
+		{ field: 'AM_Peak_Freq',     start: '06:30:00', end: '08:30:00' },
+		{ field: 'AM_Offpeak_Freq', start: '08:30:00', end: '17:00:00' },
+		{ field: 'PM_Peak_Freq',     start: '17:00:00', end: '19:00:00' },
+		{ field: 'PM_Offpeak_Freq', start: '19:00:00', end: '25:00:00' }
+	];
+
+	let services: RawBusService[];
+	if (fs.existsSync(cachePath)) {
+		console.log('⚡ Using cached bus services from file to generate frequencies');
+		services = await fs.readJson(cachePath);
+	} else {
+		services = await fetchAllBusServices();
+	}
+
+	const frequencies: GtfsFrequency[] = [];
+
+	for (const svc of services) {
+		const direction_id = (Number(svc.Direction) === 2) ? 1 : 0;
+		const trip_id = `${svc.ServiceNo}:WD:${direction_id}`;
+
+		for (const block of timeBlocks) {
+			const headway_secs = parseFreqRange((svc as any)[block.field]);
+			if (headway_secs == null) continue;
+
+			frequencies.push({
+				trip_id,
+				start_time: block.start,
+				end_time: block.end,
+				headway_secs
+			});
+		}
+	}
+
+	return frequencies;
 }

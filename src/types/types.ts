@@ -59,3 +59,10 @@ export type GtfsStopTime = {
 	stop_sequence: number;
 	shape_dist_traveled: number;
 };
+
+export type GtfsFrequency = {
+	trip_id: string;
+	start_time: string;
+	end_time: string;
+	headway_secs: number;
+};
