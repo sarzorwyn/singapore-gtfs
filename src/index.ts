@@ -2,6 +2,7 @@ import { generateGtfsStopTimes } from './bus/parseBusRouteApi';
 import { fetchGtfsStops } from './bus/parseBusStopApi';
 import { generateGtfsFrequencies, transformBusSvcApiDataToGtfs } from './bus/parseBusSvcApi';
 import { GtfsExtrasFileCopier } from './lib/gtfsFileCopier';
+import { extractMrtFrequencies } from './mrt/extractMrtFrequencies';
 import { extractMrtRoutes } from './mrt/extractMrtRoutes';
 import { extractMrtStops } from './mrt/extractMrtStops';
 import { extractMrtStopTimes } from './mrt/extractMrtStopTimes';
@@ -23,6 +24,7 @@ const main = (async () => {
 	extractMrtStops();
 	extractMrtTrips();
 	extractMrtStopTimes();
+	extractMrtFrequencies();
 
 	console.log('GTFS routes written.');
 });

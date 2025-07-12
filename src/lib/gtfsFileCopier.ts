@@ -9,7 +9,7 @@ export class GtfsExtrasFileCopier {
 	) {}
 
 	public async copyStaticFiles(): Promise<void> {
-		const filesToCopy = ['agency.txt', 'calendar.txt'];
+		const filesToCopy = ['agency.txt', 'calendar.txt', 'shapes.txt'];
 
 		await Promise.all(
 			filesToCopy.map(async (file) => {

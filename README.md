@@ -29,7 +29,7 @@ Frequencies are taken as the average of the range provided from information onli
 
 ### Train Schedules
 
-The Train schedules are copied from /original-gtfs as LTA DataMall lacks train information other than crowd levels. Bus information in original-gtfs is ignored and will be removed in a future version.
+The Train schedules are copied from /original-gtfs as LTA DataMall lacks train information other than crowd levels. 
 
 ### LRT Schedules
 

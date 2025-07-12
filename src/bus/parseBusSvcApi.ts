@@ -60,14 +60,15 @@ export async function transformBusSvcApiDataToGtfs(): Promise<{
 			});
 		}
 
-		const direction_id = svc.Direction === '2' ? 1 : 0;
+		const direction_id = Number(svc.Direction) === 2 ? 1 : 0;
 		const service_id = 'WD';
 
 		trips.push({
 			trip_id: `${svc.ServiceNo}:${service_id}:${direction_id}`,
+			shape_id: `${svc.ServiceNo}:${direction_id}`,
 			route_id: svc.ServiceNo,
 			service_id,
-			direction_id
+			direction_id,
 		});
 	}
 

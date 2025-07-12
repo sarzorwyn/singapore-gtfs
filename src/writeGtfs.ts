@@ -19,6 +19,7 @@ export async function writeGtfsFiles(data: {
 
     await writeCsv('trips.txt', data.trips, [
         'trip_id',
+		'shape_id',
         'route_id',
         'service_id',
         'direction_id'

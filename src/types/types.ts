@@ -29,6 +29,7 @@ export type GtfsRoute = {
 
 export type GtfsTrip = {
 	trip_id: string;
+	shape_id: string;
 	route_id: string;
 	service_id: string;
 	direction_id: number;

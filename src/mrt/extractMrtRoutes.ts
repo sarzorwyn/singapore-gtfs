@@ -5,8 +5,8 @@ import { format } from '@fast-csv/format';
 
 type RouteRow = {
 	route_id: string;
+	agency_id: string;
 	route_short_name: string;
-	route_long_name: string;
 	route_type: string;
 };
 
@@ -24,8 +24,8 @@ export async function extractMrtRoutes() {
 				if (type !== 3) {
 					mrtRoutes.push({
 						route_id: row.route_id,
-						route_short_name: row.route_short_name || row.route_id,
-						route_long_name: row.route_long_name,
+						agency_id: row.agency_id,
+						route_short_name: row.route_short_name,
 						route_type: row.route_type
 					});
 				}

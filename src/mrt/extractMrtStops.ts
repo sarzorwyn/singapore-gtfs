@@ -7,11 +7,17 @@ import { format } from '@fast-csv/format';
 const inputPath = path.join(__dirname, '../../data/original-gtfs/stops.txt');
 const outputPath = path.join(__dirname, '../../data/output-gtfs/stops.txt');
 
-// Match stop_ids like NS15, DT1, CC9;EW8, etc.
-const MRT_STOP_ID_REGEX = /^[A-Z]{2}\d{1,2}(;[A-Z]{2}\d{1,2})*$/;
+// const MRT_STOP_ID_REGEX = /^[A-Z]{2}\d{1,2}(;[A-Z]{2}\d{1,2})*$/;
 
-function isMrtStop(stopId: string): boolean {
-	return MRT_STOP_ID_REGEX.test(stopId);
+// function isMrtStop(stopId: string): boolean {
+// 	return MRT_STOP_ID_REGEX.test(stopId);
+// }
+
+function splitMulticodeStop(stop: GtfsStop): GtfsStop[] {
+	return stop.stop_id.split(';').map((id) => ({
+		...stop,
+		stop_id: id.trim()
+	}));
 }
 
 export async function extractMrtStops(): Promise<void> {
@@ -21,9 +27,10 @@ export async function extractMrtStops(): Promise<void> {
 		fs.createReadStream(inputPath)
 			.pipe(csv())
 			.on('data', (row: GtfsStop) => {
-				if (isMrtStop(row.stop_id)) {
-					mrtStops.push(row);
-				}
+				mrtStops.push(...splitMulticodeStop(row));
+				// if (isMrtStop(row.stop_id)) {
+				// 	mrtStops.push(...splitMulticodeStop(row));
+				// }
 			})
 			.on('end', resolve)
 			.on('error', reject);
@@ -38,7 +45,7 @@ export async function extractMrtStops(): Promise<void> {
 	const contents = fileExists ? await fs.readFile(outputPath, 'utf-8') : '';
 	const isEmpty = contents.trim().length === 0;
 
-    	const ws = fs.createWriteStream(outputPath, { flags: 'a' });
+	const ws = fs.createWriteStream(outputPath, { flags: 'a' });
 
 	if (!isEmpty) {
 		ws.write('\n');
